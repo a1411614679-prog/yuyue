@@ -41,6 +41,19 @@ function ensureQrRendered(text) {
   });
 }
 
+function formatYmd(date) {
+  const y = date.getFullYear();
+  const m = pad2(date.getMonth() + 1);
+  const d = pad2(date.getDate());
+  return `${y}-${m}-${d}`;
+}
+
+function setRideDateToToday() {
+  const el = document.getElementById("rideDate");
+  if (!el) return;
+  el.textContent = formatYmd(new Date());
+}
+
 function startCountdown(options) {
   const el = document.getElementById("countdown");
   if (!el) return;
@@ -64,72 +77,137 @@ function startCountdown(options) {
 }
 
 function setupPullRefresh() {
-  const wrap = document.querySelector(".qr-wrap");
+  const card = document.querySelector(".card");
   const indicator = document.getElementById("pullRefresh");
-  if (!wrap || !indicator) return;
+  if (!card || !indicator) return;
+
+  const defaultText = "下拉刷新二维码";
+  const releaseText = "松开刷新二维码";
+  const refreshingText = "正在刷新...";
 
   let dragging = false;
+  let refreshing = false;
   let startY = 0;
   let moved = 0;
-  const showIndicatorThreshold = 80;
-  const refreshThreshold = 110;
+  const showIndicatorThreshold = 90;
+  const refreshThreshold = 140;
+  const maxPull = 220;
+  const resistance = 0.55;
+  const refreshHold = 56;
+
+  const setIndicator = (isActive, text, opacity) => {
+    indicator.classList.toggle("active", isActive);
+    indicator.style.opacity = String(opacity);
+    const span = indicator.querySelector("span");
+    if (span && text) span.textContent = text;
+  };
+
+  const setTranslate = (px, animated) => {
+    card.style.transition = animated ? "transform 0.25s ease" : "";
+    card.style.transform = `translateY(${px}px)`;
+  };
 
   const reset = () => {
-    wrap.style.transition = "transform 0.25s ease";
-    wrap.style.transform = "translateY(0)";
-    indicator.classList.remove("active");
+    indicator.style.opacity = "";
+    setIndicator(false, defaultText, 0);
+    setTranslate(0, true);
   };
 
-  const finishDrag = () => {
+  const finishDrag = (shouldReleaseCapture, pointerId) => {
     if (!dragging) return;
     dragging = false;
-    if (moved >= refreshThreshold) {
-      ensureQrRendered(buildQrContent());
+
+    if (moved >= refreshThreshold && !refreshing) {
+      refreshing = true;
+      setIndicator(true, refreshingText, 1);
+      setTranslate(refreshHold, true);
+
+      window.setTimeout(() => {
+        ensureQrRendered(buildQrContent());
+        window.setTimeout(() => {
+          refreshing = false;
+          moved = 0;
+          reset();
+        }, 240);
+      }, 450);
+    } else {
+      moved = 0;
+      reset();
     }
-    moved = 0;
-    reset();
+
+    if (shouldReleaseCapture) {
+      try {
+        cardInner.releasePointerCapture(pointerId);
+      } catch {
+        // ignore
+      }
+    }
   };
 
-  wrap.addEventListener("pointerdown", (event) => {
+  card.addEventListener("pointerdown", (event) => {
     if (event.target.closest("button")) return;
+    if (refreshing) return;
     dragging = true;
     startY = event.clientY;
     moved = 0;
-    wrap.style.transition = "";
-    wrap.setPointerCapture(event.pointerId);
+    setTranslate(0, false);
+    setIndicator(false, defaultText, 0);
+    card.setPointerCapture(event.pointerId);
+    event.preventDefault();
   });
 
-  wrap.addEventListener("pointermove", (event) => {
+  card.addEventListener("pointermove", (event) => {
     if (!dragging) return;
     const delta = event.clientY - startY;
     if (delta <= 0) {
       moved = 0;
-      wrap.style.transform = "translateY(0)";
-      indicator.classList.remove("active");
+      setTranslate(0, false);
+      setIndicator(false, defaultText, 0);
       return;
     }
-    moved = Math.min(delta, 150);
-    wrap.style.transform = `translateY(${moved / 2}px)`;
-    if (moved >= showIndicatorThreshold) {
-      indicator.classList.add("active");
-    } else {
-      indicator.classList.remove("active");
-    }
+
+    moved = Math.min(delta, maxPull);
+    const pulled = Math.round(moved * resistance);
+    setTranslate(pulled, false);
+
+    const opacity = Math.max(0, Math.min(1, moved / showIndicatorThreshold));
+    const active = moved >= showIndicatorThreshold;
+    const text = moved >= refreshThreshold ? releaseText : defaultText;
+    setIndicator(active, text, opacity);
+    event.preventDefault();
   });
 
-  wrap.addEventListener("pointerup", (event) => {
-    const wasDragging = dragging;
-    finishDrag();
-    if (wasDragging) {
-      wrap.releasePointerCapture(event.pointerId);
-    }
+  card.addEventListener("pointerup", (event) => {
+    finishDrag(true, event.pointerId);
   });
-  wrap.addEventListener("pointercancel", finishDrag);
-  wrap.addEventListener("pointerleave", finishDrag);
+
+  card.addEventListener("pointercancel", () => {
+    finishDrag(false, 0);
+  });
+
+  card.addEventListener("pointerleave", () => {
+    finishDrag(false, 0);
+  });
+
+  // iOS/部分浏览器：额外阻止页面级下拉回弹/原生刷新。
+  document.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!e.target.closest(".card")) {
+        e.preventDefault();
+      }
+    },
+    { passive: false }
+  );
 }
 
 (function init() {
   startCountdown({ initialSeconds: 22 * 60 + 58 });
   ensureQrRendered(buildQrContent());
+  setRideDateToToday();
   setupPullRefresh();
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js");
+  }
 })();
