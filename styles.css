@@ -59,7 +59,7 @@ main.phone {
 
 .title {
   margin-right: 35px;
-  margin: 0;
+  /* margin: 0; */
   font-size: 18px;
   font-weight: 600;
   text-align: center;
