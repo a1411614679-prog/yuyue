@@ -58,6 +58,7 @@ main.phone {
 }
 
 .title {
+  margin-right: 35px;
   margin: 0;
   font-size: 18px;
   font-weight: 600;
@@ -84,12 +85,11 @@ main.phone {
   border-radius: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
 }
 
 .tip-voice {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   flex: 0 0 auto;
 }
 
@@ -154,7 +154,7 @@ main.phone {
   width: 68px;
   height: auto;
   z-index: 20;
-  right: max(10px, calc((100vw - 430px) / 2 + 10px));
+  right: 0;
   top: 29vh;
   transform: translateY(-50%);
 }
