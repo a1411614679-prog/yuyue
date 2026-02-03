@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>预约结果</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="phone" aria-label="预约结果页面">
+      <header class="topbar">
+        <button class="icon-btn" type="button" aria-label="返回" onclick="history.back()">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M15.5 19.5 8 12l7.5-7.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+        <h1 class="title">预约结果</h1>
+        <button class="icon-btn" type="button" aria-label="关闭">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </header>
+
+      <section class="tip" role="note" aria-label="提示">
+        <span class="tip-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M12 7v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M12 17h.01" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="tip-text">请务必在预约时间段前5分钟内进站</span>
+      </section>
+
+      <section class="card" aria-label="预约码">
+        <div class="card-inner">
+          <div class="expires" aria-live="polite">
+            <span class="expires-label">失效时间：</span>
+            <span class="expires-value" id="countdown">--分--秒</span>
+          </div>
+
+          <div class="qr-wrap" aria-label="二维码区域">
+            <div id="qrcode" class="qrcode" aria-label="二维码"></div>
+
+            <button class="floating" type="button" aria-label="去乘车">
+              <span class="floating-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7 15h10M7 9h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path
+                    d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
+              </span>
+              <span class="floating-text">去乘车</span>
+            </button>
+          </div>
+
+          <p class="qr-help">请凭此二维码，前往地铁站指定预约通道扫码进站</p>
+
+          <div class="route">
+            <span class="route-left">6号线</span>
+            <span class="route-station">光电园站</span>
+          </div>
+
+          <div class="time">
+            <span class="time-date" id="rideDate">2026-02-02</span>
+            <span class="time-slot" id="rideSlot">18:10~18:20</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="banner" aria-label="底部宣传条">
+        <div class="banner-inner">
+          <div class="banner-bubble">重庆轨道交通官方APP</div>
+          <div class="banner-title">渝畅行，我来啦！</div>
+          <div class="banner-train" aria-hidden="true"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
