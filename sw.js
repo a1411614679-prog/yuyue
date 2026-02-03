@@ -1,4 +1,4 @@
-const CACHE_NAME = "yuyue-static-v1";
+const CACHE_NAME = "yuyue-static-v2";
 
 const ASSETS = [
   "./",
@@ -9,6 +9,9 @@ const ASSETS = [
   "./image/foot.png",
   "./image/ma.png",
   "./image/voice.png",
+  "./image/icon-192.png",
+  "./image/icon-512.png",
+  "./image/apple-touch-icon.png",
 ];
 
 self.addEventListener("install", (event) => {

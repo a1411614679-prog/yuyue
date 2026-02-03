@@ -81,9 +81,9 @@ function setupPullRefresh() {
   const indicator = document.getElementById("pullRefresh");
   if (!card || !indicator) return;
 
-  const defaultText = "下拉刷新二维码";
-  const releaseText = "松开刷新二维码";
-  const refreshingText = "正在刷新...";
+  const defaultText = "下拉刷新";
+  const releaseText = "";
+  const refreshingText = "";
 
   let dragging = false;
   let refreshing = false;
