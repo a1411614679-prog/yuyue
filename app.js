@@ -202,7 +202,7 @@ function setupPullRefresh() {
 }
 
 (function init() {
-  startCountdown({ initialSeconds: 22 * 60 + 58 });
+  startCountdown({ initialSeconds: 10 * 60 + 58 });
   ensureQrRendered(buildQrContent());
   setRideDateToToday();
   setupPullRefresh();

@@ -235,8 +235,8 @@ main.phone {
 .qr-help {
   margin: 8px auto 0;
   padding: 6px 14px;
-  background: #eaf2ff;
-  color: #4b5563;
+  background: rgb(141 145 151 / 8%);
+  color: #989b9f;
   font-size: 12px;
   display: inline-flex;
 }
