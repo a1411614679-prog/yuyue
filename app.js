@@ -1,4 +1,4 @@
-function pad2(n) {
+﻿function pad2(n) {
   return String(n).padStart(2, "0");
 }
 
@@ -66,7 +66,7 @@ function startCountdown(options) {
 
     if (remainingSeconds < 0) {
       clearInterval(timer);
-      el.textContent = "已失效";
+      el.textContent = "Expired";
     }
   };
 
@@ -202,7 +202,7 @@ function setupPullRefresh() {
 }
 
 (function init() {
-  startCountdown({ initialSeconds: 10 * 60 + 58 });
+  startCountdown({ initialSeconds: 4 * 60 });
   ensureQrRendered(buildQrContent());
   setRideDateToToday();
   setupPullRefresh();
@@ -211,3 +211,6 @@ function setupPullRefresh() {
     navigator.serviceWorker.register("./sw.js");
   }
 })();
+
+
+
